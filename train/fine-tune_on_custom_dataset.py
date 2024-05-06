@@ -1,11 +1,14 @@
 import torch
 import argparse
 import evaluate
+import os
 from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 from datasets import DatasetDict, Audio, load_from_disk, concatenate_datasets
 from transformers.models.whisper.english_normalizer import BasicTextNormalizer
 from transformers import WhisperFeatureExtractor, WhisperTokenizer, WhisperProcessor, WhisperForConditionalGeneration, Seq2SeqTrainingArguments, Seq2SeqTrainer
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:64"
 
 #######################     ARGUMENT PARSING        #########################
 
@@ -21,7 +24,7 @@ parser.add_argument(
     '--language', 
     type=str, 
     required=False, 
-    default='Hindi', 
+    default='Vietnamese', 
     help='Language the model is being adapted to in Camel case.'
 )
 parser.add_argument(
@@ -155,8 +158,19 @@ if freeze_encoder:
     model.freeze_encoder()
     model.model.encoder.gradient_checkpointing = False
 
+TASK = "transcribe"
 
-model.config.forced_decoder_ids = None
+model.config.forced_decoder_ids = processor.tokenizer.get_decoder_prompt_ids(
+language=args.language, task=TASK
+)
+model.config.suppress_tokens = []
+model.generation_config.forced_decoder_ids = processor.tokenizer.get_decoder_prompt_ids(
+language=args.language, task=TASK
+)
+model.generation_config.suppress_tokens = []
+
+
+#model.config.forced_decoder_ids = None
 model.config.suppress_tokens = []
 
 if gradient_checkpointing:
@@ -295,7 +309,6 @@ if args.train_strategy == 'epoch':
         load_best_model_at_end=True,
         metric_for_best_model="wer",
         greater_is_better=False,
-        optim="adamw_bnb_8bit",
         resume_from_checkpoint=args.resume_from_ckpt,
     )
 
@@ -322,7 +335,6 @@ elif args.train_strategy == 'steps':
         load_best_model_at_end=True,
         metric_for_best_model="wer",
         greater_is_better=False,
-        optim="adamw_bnb_8bit",
         resume_from_checkpoint=args.resume_from_ckpt,
     )
 
