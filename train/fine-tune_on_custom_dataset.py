@@ -350,6 +350,11 @@ trainer = Seq2SeqTrainer(
 
 processor.save_pretrained(training_args.output_dir)
 
+resume_from_checkpoint_values = {"True": True, "None": None}
+def convert_resume_from_checkpoint_value(text):
+  return resume_from_checkpoint_values.get(text, None)
+
 print('TRAINING IN PROGRESS...')
-trainer.train()
+trainer.train(resume_from_checkpoint=convert_resume_from_checkpoint_value(args.resume_from_ckpt))
+#trainer.save_model(training_args.output_dir + r'/saved_model')
 print('DONE TRAINING')
