@@ -1,4 +1,4 @@
-wav_filename,transcript
-D:\development\hass_whisper_finetune\audio\bat_den.wav,bật đèn
-D:\development\hass_whisper_finetune\audio\bat_dieu_hoa.wav,bật điều hòa
-D:\development\hass_whisper_finetune\audio\bat_quat_tran.wav,bật quạt trần
+wav_filename,transcript,path
+bat_den.wav,bật đèn,D:\development\hass_whisper_finetune\audio\
+bat_dieu_hoa.wav,bật điều hòa,
+bat_quat_tran.wav,bật quạt trần,
