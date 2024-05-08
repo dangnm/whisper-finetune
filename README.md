@@ -1,17 +1,17 @@
 # Fine-tuning and evaluating Whisper models for Automatic Speech Recognition
 [Full tutorial here](README_FULL.md)
 
-## Quick example to finetune Whisper model
+## Quick example to finetune Whisper model for HASS assist
 
 1. **Edit CSV training data**: 
-- Given the source folder is in C:\ai\whisper-finetune 
+- Given the sourcWe folder is in C:\ai\whisper-finetune 
 - Go to C:\ai\whisper-finetune\custom_data\sample_data and edit the train.csv
 
 2. **Build converted training data**: 
 - The output converted train data is in C:\ai\training_data
 - Run the following command
 ```bash
-cd C:\ai\whisper-finetune 
+cd C:\ai\whisper-finetune
 python custom_data/data_prep.py --source_data_dir C:\ai\whisper-finetune\custom_data\sample_data --output_data_dir C:\ai\training_data
 ```
 
@@ -42,7 +42,7 @@ api.upload_folder(
 )
 ```
 
-4. **Convert to ctranslate2 format**: 
+5. **Convert to ctranslate2 format**: 
 - Install ct2
 
 ```bash
