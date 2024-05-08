@@ -10,6 +10,12 @@ parser.add_argument('--output_data_dir', type=str, required=False, default='op_d
 args = parser.parse_args()
 
 train_df = pd.read_csv(f"{args.source_data_dir}/train.csv")
+
+mask = (train_df['path'] == '') | train_df['path'].isnull()
+train_df.loc[mask, 'path'] = train_df['path'].iloc[0]
+train_df['wav_filename'] = train_df['path'].str.cat(train_df['wav_filename'], sep='')
+train_df.drop(columns=['path'], inplace=True)
+
 train_df.columns = ["audio", "sentence"]
 train_dataset = Dataset.from_pandas(train_df)
 train_dataset = train_dataset.cast_column("audio", Audio(sampling_rate=16000))
