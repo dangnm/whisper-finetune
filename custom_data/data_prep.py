@@ -15,8 +15,12 @@ mask = (train_df['path'] == '') | train_df['path'].isnull()
 train_df.loc[mask, 'path'] = train_df['path'].iloc[0]
 train_df['wav_filename'] = train_df['path'].str.cat(train_df['wav_filename'], sep='')
 train_df.drop(columns=['path'], inplace=True)
+train_df.drop(columns=['version'], inplace=True)
 
 train_df.columns = ["audio", "sentence"]
+train_df = train_df.drop(train_df[train_df["audio"].isna() | (train_df["audio"] == '')].index)
+train_df.reset_index(drop=True, inplace=True)
+
 train_dataset = Dataset.from_pandas(train_df)
 train_dataset = train_dataset.cast_column("audio", Audio(sampling_rate=16000))
 train_dataset = train_dataset.cast_column("sentence", Value("string"))
